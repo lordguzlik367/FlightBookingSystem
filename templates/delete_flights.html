@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Удалить рейсы</title>
+</head>
+<body bgcolor="#f5f5f5" text="#333333">
+    <center>
+        <h1><font size="6">Удалить рейсы</font></h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div style="color: {% if category == 'error' %}red{% else %}green{% endif %}; 
+                                margin: 20px 0; padding: 10px; 
+                                background: {% if category == 'error' %}#ffe6e6{% else %}#e6ffe6{% endif %}; 
+                                border: 1px solid {% if category == 'error' %}red{% else %}green{% endif %}; 
+                                width: 80%;">
+                        <b>{{ message }}</b>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% for flight in flights %}
+        <form method="POST" action="{{ url_for('delete_flights_process') }}">
+            <input type="hidden" name="flight_id" value="{{ flight.id }}">
+            <div style="border: 2px solid #ccc; padding: 20px; margin: 20px 0; background: white; width: 80%;">
+                <table cellpadding="8" cellspacing="0" border="0" width="100%">
+                    <tr>
+                        <td align="center" colspan="2">
+                            <b><font size="5">Рейс</font></b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right" width="40%"><b><font size="4">Город вылета:</font></b></td>
+                        <td width="60%">
+                            <font size="4">{{ flight.departure_city }}</font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><b><font size="4">Город прилета:</font></b></td>
+                        <td>
+                            <font size="4">{{ flight.arrival_city }}</font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><b><font size="4">Дата вылета:</font></b></td>
+                        <td>
+                            <font size="4">{{ flight.departure_date }}</font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><b><font size="4">Дата прилета:</font></b></td>
+                        <td>
+                            <font size="4">{{ flight.arrival_date }}</font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><b><font size="4">Авиакомпания:</font></b></td>
+                        <td>
+                            <font size="4">{{ flight.company }}</font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><b><font size="4">Цена (руб):</font></b></td>
+                        <td>
+                            <font size="4">{{ flight.price }}</font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <button type="submit" 
+                                    style="font-size:16px; padding:8px 16px; margin: 10px; background: #ff4444; color: white; border: none;"
+                                    onclick="return confirm('Вы уверены, что хотите удалить рейс {{ flight.id }}?')">
+                                Удалить рейс {{ flight.id }}
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+        {% endfor %}
+        
+        {% if not flights %}
+        <div style="margin: 20px 0;">
+            <font size="4">Нет рейсов для удаления</font>
+        </div>
+        {% endif %}
+        
+        <!-- Пагинация -->
+        {% if total_pages > 1 %}
+        <div style="margin: 20px 0; text-align: center;">
+            {% if current_page > 0 %}
+                <a href="{{ url_for('delete_flights_page', page=current_page - 1) }}" 
+                   style="font-size:16px; margin: 0 10px; text-decoration: none; padding: 5px 10px; border: 1px solid #ccc;">
+                    ← Предыдущая
+                </a>
+            {% endif %}
+            
+            <span style="font-size:16px; margin: 0 10px;">
+                Страница {{ current_page + 1 }} из {{ total_pages }}
+            </span>
+            
+            {% if current_page < total_pages - 1 %}
+                <a href="{{ url_for('delete_flights_page', page=current_page + 1) }}" 
+                   style="font-size:16px; margin: 0 10px; text-decoration: none; padding: 5px 10px; border: 1px solid #ccc;">
+                    Следующая →
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div style="margin: 20px 0;">
+            <a href="/" style="font-size:16px;">Вернуться в админ-панель</a>
+        </div>
+    </center>
+</body>
+</html>
