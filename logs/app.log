@@ -63,3 +63,76 @@
 2025-11-30 19:25:19,443 - INFO - 127.0.0.1 - - [30/Nov/2025 19:25:19] "GET /delete_booking HTTP/1.1" 200 -
 2025-11-30 19:25:55,717 - INFO - 127.0.0.1 - - [30/Nov/2025 19:25:55] "[32mPOST /delete_booking/process HTTP/1.1[0m" 302 -
 2025-11-30 19:25:55,726 - INFO - 127.0.0.1 - - [30/Nov/2025 19:25:55] "GET /delete_booking HTTP/1.1" 200 -
+2025-12-09 10:39:57,258 - __main__ - INFO - Database initialized
+2025-12-09 10:47:01,782 - __main__ - INFO - Database initialized
+2025-12-09 10:49:55,337 - __main__ - INFO - Database initialized
+2025-12-09 10:50:05,566 - __main__ - INFO - Database initialized
+2025-12-09 10:50:05,694 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-12-09 10:50:05,694 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-12-09 10:50:05,696 - werkzeug - INFO -  * Restarting with stat
+2025-12-09 10:50:05,967 - __main__ - INFO - Database initialized
+2025-12-09 10:50:05,988 - werkzeug - WARNING -  * Debugger is active!
+2025-12-09 10:50:05,993 - werkzeug - INFO -  * Debugger PIN: 255-265-136
+2025-12-09 10:50:18,039 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 10:50:18] "GET / HTTP/1.1" 200 -
+2025-12-09 10:50:18,323 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 10:50:18] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-12-09 10:50:24,942 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 10:50:24] "GET /health HTTP/1.1" 200 -
+2025-12-09 10:50:31,588 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 10:50:31] "GET /view_bookings HTTP/1.1" 200 -
+2025-12-09 10:50:34,833 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 10:50:34] "GET /view_bookings HTTP/1.1" 200 -
+2025-12-09 10:57:35,285 - app - INFO - Database initialized
+2025-12-09 10:57:53,534 - app - INFO - Database initialized
+2025-12-09 11:04:27,748 - __main__ - INFO - Database initialized
+2025-12-09 11:04:27,781 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-12-09 11:04:27,781 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-12-09 11:04:27,783 - werkzeug - INFO -  * Restarting with stat
+2025-12-09 11:04:28,031 - __main__ - INFO - Database initialized
+2025-12-09 11:04:28,051 - werkzeug - WARNING -  * Debugger is active!
+2025-12-09 11:04:28,054 - werkzeug - INFO -  * Debugger PIN: 255-265-136
+2025-12-09 11:04:29,946 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 11:04:29] "GET / HTTP/1.1" 200 -
+2025-12-09 11:04:30,182 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 11:04:30] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-12-09 11:04:42,120 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 11:04:42] "GET /add_booking HTTP/1.1" 200 -
+2025-12-09 11:07:51,720 - werkzeug - INFO -  * Detected change in 'c:\\Users\\roman\\.vscode\\kurs\\tests\\test_flights.py', reloading
+2025-12-09 11:07:51,742 - werkzeug - INFO -  * Restarting with stat
+2025-12-09 11:07:52,017 - __main__ - INFO - Database initialized
+2025-12-09 11:07:52,037 - werkzeug - WARNING -  * Debugger is active!
+2025-12-09 11:07:52,040 - werkzeug - INFO -  * Debugger PIN: 255-265-136
+2025-12-09 11:08:26,685 - werkzeug - INFO -  * Detected change in 'c:\\Users\\roman\\.vscode\\kurs\\tests\\test_flights.py', reloading
+2025-12-09 11:08:26,706 - werkzeug - INFO -  * Restarting with stat
+2025-12-09 11:08:26,955 - __main__ - INFO - Database initialized
+2025-12-09 11:08:26,975 - werkzeug - WARNING -  * Debugger is active!
+2025-12-09 11:08:26,977 - werkzeug - INFO -  * Debugger PIN: 255-265-136
+2025-12-09 11:09:27,510 - __main__ - INFO - Database initialized
+2025-12-09 11:09:27,540 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-12-09 11:09:27,541 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-12-09 11:09:27,542 - werkzeug - INFO -  * Restarting with stat
+2025-12-09 11:09:27,786 - __main__ - INFO - Database initialized
+2025-12-09 11:09:27,806 - werkzeug - WARNING -  * Debugger is active!
+2025-12-09 11:09:27,809 - werkzeug - INFO -  * Debugger PIN: 255-265-136
+2025-12-09 11:09:28,904 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 11:09:28] "GET / HTTP/1.1" 200 -
+2025-12-09 11:09:29,107 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 11:09:29] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-12-09 11:09:29,938 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 11:09:29] "GET /add_flight HTTP/1.1" 200 -
+2025-12-09 11:09:32,381 - werkzeug - INFO - 127.0.0.1 - - [09/Dec/2025 11:09:32] "GET /add_user HTTP/1.1" 200 -
+2025-12-09 11:09:40,086 - werkzeug - INFO -  * Detected change in 'c:\\Users\\roman\\.vscode\\kurs\\tests\\test_users.py', reloading
+2025-12-09 11:09:40,113 - werkzeug - INFO -  * Restarting with stat
+2025-12-09 11:09:40,381 - __main__ - INFO - Database initialized
+2025-12-09 11:09:40,403 - werkzeug - WARNING -  * Debugger is active!
+2025-12-09 11:09:40,406 - werkzeug - INFO -  * Debugger PIN: 255-265-136
+2025-12-09 11:10:51,708 - werkzeug - INFO -  * Detected change in 'c:\\Users\\roman\\.vscode\\kurs\\validate.py', reloading
+2025-12-09 11:10:51,728 - werkzeug - INFO -  * Restarting with stat
+2025-12-09 11:10:51,984 - __main__ - INFO - Database initialized
+2025-12-09 11:10:52,004 - werkzeug - WARNING -  * Debugger is active!
+2025-12-09 11:10:52,007 - werkzeug - INFO -  * Debugger PIN: 255-265-136
+2025-12-09 11:12:02,276 - werkzeug - INFO -  * Detected change in 'c:\\Users\\roman\\.vscode\\kurs\\validate.py', reloading
+2025-12-09 11:12:02,297 - werkzeug - INFO -  * Restarting with stat
+2025-12-09 11:12:02,556 - __main__ - INFO - Database initialized
+2025-12-09 11:12:02,575 - werkzeug - WARNING -  * Debugger is active!
+2025-12-09 11:12:02,578 - werkzeug - INFO -  * Debugger PIN: 255-265-136
+2025-12-09 11:12:13,086 - app - INFO - Database initialized
+2025-12-09 11:22:24,257 - app - INFO - Database initialized
+2025-12-09 11:23:43,440 - app - INFO - Database initialized
+2025-12-09 11:24:12,482 - app - INFO - Database initialized
+2025-12-09 11:24:26,510 - app - INFO - Database initialized
+2025-12-09 11:29:23,808 - app - INFO - Database initialized
+2025-12-09 11:33:59,128 - app - INFO - Database initialized

@@ -2,33 +2,26 @@ from datetime import datetime, date
 from createdb import get_db_connection
 
 def regCheck(fio, email, password, confirm_password):
-    if not fio or not password or not confirm_password:
+    if not fio or not email or not password or not confirm_password:
         return False, 'Заполните все обязательные поля'
 
     fio = fio.strip()
     if len(fio) < 2:
         return False, 'ФИО должно содержать минимум 2 символа'
-    if len(fio) > 100:
-        return False, 'ФИО не должно превышать 100 символов'
     
-    if email:
-        email = email.strip()
-        if len(email) > 100:
-            return False, 'Email не должен превышать 100 символов'
-        if '@' not in email or '.' not in email:
-            return False, 'Неверный формат email'
-    else:
-        return False, 'Введите email'
-        
+    email = email.strip()
+    if '@' not in email or '.' not in email:
+        return False, 'Неверный формат email'
     
     if len(password) < 6:
         return False, 'Пароль должен быть не менее 6 символов'
     elif password != confirm_password:
         return False, 'Пароли не совпадают'
+    
     return True, 'Успешно'
 
 def checkFlight(departure_city, arrival_city, departure_date, arrival_date, company, price):
-    if not departure_city or not arrival_city or not departure_date or not arrival_date or not company or not price:
+    if not all([departure_city, arrival_city, departure_date, arrival_date, company, price]):
         return False, 'Заполните все обязательные поля'
     
     departure_city = departure_city.strip()
@@ -61,18 +54,15 @@ def checkFlight(departure_city, arrival_city, departure_date, arrival_date, comp
         return False, 'Название компании должно содержать минимум 2 символа'
     
     try:
-        price_int = int(price)
-        if price_int <= 0:
-            return False, 'Цена должна быть положительным числом'
-        if price_int > 1000000:
-            return False, 'Цена не может превышать 1 000 000 рублей'
+        price_float = float(price)
+        if price_float <= 0:
+            return False, "Цена должна быть положительным числом"
     except ValueError:
-        return False, 'Цена должна быть числом'
+        return False, "Цена должна быть числом"
     
-    return True, 'Данные корректны'
+    return True, "Данные корректны"
 
 def checkBooking(passenger_fio, user_id, flight_id):
-
     """Валидация данных бронирования"""
     if not passenger_fio or not user_id or not flight_id:
         return False, 'Все поля обязательны для заполнения'
@@ -80,8 +70,6 @@ def checkBooking(passenger_fio, user_id, flight_id):
     passenger_fio = passenger_fio.strip()
     if len(passenger_fio) < 2:
         return False, 'ФИО пассажира должно содержать минимум 2 символа'
-    if len(passenger_fio) > 100:
-        return False, 'ФИО пассажира не должно превышать 100 символов'
     
     try:
         int(user_id)
@@ -92,23 +80,38 @@ def checkBooking(passenger_fio, user_id, flight_id):
     return True, 'Данные корректны'
 
 def validate_booking_data(passenger_fio, user_id, flight_id):
-    """Валидация данных бронирования"""
     if not passenger_fio or not user_id or not flight_id:
-        return False, 'Все поля обязательны для заполнения'
+        return False, "Все поля обязательны для заполнения"
     
     passenger_fio = passenger_fio.strip()
     if len(passenger_fio) < 2:
-        return False, 'ФИО пассажира должно содержать минимум 2 символа'
-    if len(passenger_fio) > 100:
-        return False, 'ФИО пассажира не должно превышать 100 символов'
+        return False, "ФИО пассажира должно содержать минимум 2 символа"
     
-    try:
-        int(user_id)
-        int(flight_id)
-    except (TypeError, ValueError):
-        return False, 'Неверный идентификатор пользователя или рейса'
+    if not str(user_id).isdigit():
+        return False, "Неверный ID пользователя"
     
-    return True, 'Данные корректны'
+    if not str(flight_id).isdigit():
+        return False, "Неверный ID рейса"
+    
+    conn = get_db_connection()
+    
+    user_exists = conn.execute(
+        "SELECT 1 FROM users WHERE id = ?", (int(user_id),)
+    ).fetchone()
+    
+    flight_exists = conn.execute(
+        "SELECT 1 FROM flights WHERE id = ?", (int(flight_id),)
+    ).fetchone()
+    
+    conn.close()
+    
+    if not user_exists:
+        return False, "Пользователь не найден"
+    
+    if not flight_exists:
+        return False, "Рейс не найден"
+    
+    return True, "Данные корректны"
 
 def validate_user_exists(user_id):
     """Проверка существования пользователя"""

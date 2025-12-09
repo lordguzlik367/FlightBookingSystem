@@ -3,7 +3,6 @@ import os
 import sys
 import hashlib
 
-# Добавляем путь к проекту
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app import app
@@ -11,114 +10,170 @@ from createdb import create_database, get_db_connection
 
 class TestBookings(unittest.TestCase):
     def setUp(self):
-        """Настройка тестового окружения"""
         app.config['TESTING'] = True
         app.config['WTF_CSRF_ENABLED'] = False
         
-        # Используем временную базу данных
         self.test_db = 'test_database.db'
         app.config['DATABASE_FILE'] = self.test_db
         
         self.client = app.test_client()
         
-        # Создаем тестовую базу данных
         create_database()
         
-        # Добавляем тестовые данные: пользователя и рейс
         conn = get_db_connection()
         
-        # Добавляем пользователя
         hashed_password = hashlib.sha256('password123'.encode()).hexdigest()
         conn.execute('''
             INSERT INTO users (fio, email, password)
             VALUES (?, ?, ?)
-        ''', ('Иванов Иван', 'ivanov@test.ru', hashed_password))
+        ''', ('Ivanov Ivan', 'ivanov@test.ru', hashed_password))
         
-        # Добавляем рейс
         conn.execute('''
             INSERT INTO flights (departure_city, arrival_city, departure_date, arrival_date, company, price)
             VALUES (?, ?, ?, ?, ?, ?)
-        ''', ('Москва', 'Санкт-Петербург', '2026-01-15', '2026-01-15', 'Аэрофлот', 5000))
+        ''', ('Moscow', 'Saint Petersburg', '2026-01-15', '2026-01-15', 'Aeroflot', 5000))
         
         conn.commit()
         conn.close()
 
     def tearDown(self):
-        """Очистка после тестов"""
         if os.path.exists(self.test_db):
             os.remove(self.test_db)
 
-    def test_add_booking(self):
-        """Тест добавления бронирования"""
+    def test_add_booking_and_verify_db(self):
+        conn = get_db_connection()
+        initial_count = conn.execute('SELECT COUNT(*) FROM booking').fetchone()[0]
+        conn.close()
+        
         response = self.client.post('/add_booking', data={
             'user_id': 1,
             'flight_id': 1,
-            'passenger_fio': 'Петров Петр Петрович'
+            'passenger_fio': 'Petrov Petr Petrovich'
         }, follow_redirects=True)
         
         self.assertEqual(response.status_code, 200)
         
-        # Проверяем, что бронирование добавлено в базу
         conn = get_db_connection()
-        booking = conn.execute('SELECT * FROM booking WHERE passenger_fio = ?', ('Петров Петр Петрович',)).fetchone()
-        conn.close()
+        
+        final_count = conn.execute('SELECT COUNT(*) FROM booking').fetchone()[0]
+        self.assertEqual(final_count, initial_count + 1)
+        
+        booking = conn.execute(
+            'SELECT * FROM booking WHERE passenger_fio = ?', 
+            ('Petrov Petr Petrovich',)
+        ).fetchone()
         
         self.assertIsNotNone(booking)
         self.assertEqual(booking['user_id'], 1)
         self.assertEqual(booking['flight_id'], 1)
+        self.assertEqual(booking['passenger_fio'], 'Petrov Petr Petrovich')
+        self.assertIsNotNone(booking['booking_date'])  # Дата должна быть установлена
+        
+        conn.close()
 
-    def test_edit_booking(self):
-        """Тест редактирования бронирования"""
+    def test_edit_booking_and_verify_db(self):
         conn = get_db_connection()
         conn.execute('''
             INSERT INTO booking (user_id, flight_id, passenger_fio, booking_date)
-            VALUES (?, ?, ?, datetime('now'))
-        ''', (1, 1, 'Петров Петр'))
+            VALUES (?, ?, ?, datetime("now"))
+        ''', (1, 1, 'Petrov Petr'))
         conn.commit()
         booking_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
+        
+        booking_before = conn.execute(
+            'SELECT * FROM booking WHERE id = ?', 
+            (booking_id,)
+        ).fetchone()
+        old_booking_date = booking_before['booking_date']
         conn.close()
 
-        # Редактируем бронирование
+        self.assertEqual(booking_before['passenger_fio'], 'Petrov Petr')
+
         response = self.client.post('/edit_bookings/process', data={
             'booking_id': booking_id,
             'user_id': 1,
             'flight_id': 1,
-            'passenger_fio': 'Петров Петр Иванович'
+            'passenger_fio': 'Petrov Petr Ivanovich'
         }, follow_redirects=True)
         
         self.assertEqual(response.status_code, 200)
         
-        # Проверяем изменения
         conn = get_db_connection()
-        updated_booking = conn.execute('SELECT * FROM booking WHERE id = ?', (booking_id,)).fetchone()
-        conn.close()
+        updated_booking = conn.execute(
+            'SELECT * FROM booking WHERE id = ?', 
+            (booking_id,)
+        ).fetchone()
         
-        self.assertEqual(updated_booking['passenger_fio'], 'Петров Петр Иванович')
+        self.assertEqual(updated_booking['passenger_fio'], 'Petrov Petr Ivanovich')
+        self.assertEqual(updated_booking['user_id'], 1)
+        self.assertEqual(updated_booking['flight_id'], 1)
+        self.assertEqual(updated_booking['booking_date'], old_booking_date)  # Дата не должна измениться
+        
+        conn.close()
 
-    def test_delete_booking(self):
-        """Тест удаления бронирования"""
+    def test_delete_booking_and_verify_db(self):
+        """Тест удаления бронирования с проверкой в БД"""
         conn = get_db_connection()
         conn.execute('''
             INSERT INTO booking (user_id, flight_id, passenger_fio, booking_date)
-            VALUES (?, ?, ?, datetime('now'))
-        ''', (1, 1, 'Петров Петр'))
+            VALUES (?, ?, ?, datetime("now"))
+        ''', (1, 1, 'Petrov Petr'))
         conn.commit()
         booking_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
+        
+        initial_count = conn.execute('SELECT COUNT(*) FROM booking').fetchone()[0]
         conn.close()
 
-        # Удаляем бронирование
+        conn = get_db_connection()
+        booking_before = conn.execute(
+            'SELECT * FROM booking WHERE id = ?', 
+            (booking_id,)
+        ).fetchone()
+        self.assertIsNotNone(booking_before)
+        conn.close()
+
         response = self.client.post('/delete_booking/process', data={
             'booking_ids': [booking_id]
         }, follow_redirects=True)
         
         self.assertEqual(response.status_code, 200)
         
-        # Проверяем, что бронирование удалено
         conn = get_db_connection()
-        deleted_booking = conn.execute('SELECT * FROM booking WHERE id = ?', (booking_id,)).fetchone()
+        final_count = conn.execute('SELECT COUNT(*) FROM booking').fetchone()[0]
+        self.assertEqual(final_count, initial_count - 1)
+        
+        deleted_booking = conn.execute(
+            'SELECT * FROM booking WHERE id = ?', 
+            (booking_id,)
+        ).fetchone()
+        self.assertIsNone(deleted_booking)
+        
+        conn.close()
+
+    def test_add_booking_invalid_data(self):
+        conn = get_db_connection()
+        initial_count = conn.execute('SELECT COUNT(*) FROM booking').fetchone()[0]
         conn.close()
         
-        self.assertIsNone(deleted_booking)
+        response = self.client.post('/add_booking', data={
+            'user_id': 999,  # Несуществующий пользователь
+            'flight_id': 1,
+            'passenger_fio': 'Test Passenger'
+        }, follow_redirects=True)
+        
+        self.assertEqual(response.status_code, 200)
+        
+        conn = get_db_connection()
+        booking = conn.execute(
+            'SELECT * FROM booking WHERE passenger_fio = ?', 
+            ('Test Passenger',)
+        ).fetchone()
+        self.assertIsNone(booking)
+        
+        final_count = conn.execute('SELECT COUNT(*) FROM booking').fetchone()[0]
+        self.assertEqual(final_count, initial_count)  # Не должно быть изменений
+        
+        conn.close()
 
     def test_view_bookings_pages(self):
         """Тест отображения страниц с бронированиями"""
